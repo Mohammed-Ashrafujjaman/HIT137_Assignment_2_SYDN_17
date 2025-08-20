@@ -24,7 +24,7 @@ assets/    → Images and media
 ## 🔧 How to Run
 1. Clone this repository:
 ```bash
-(https://github.com/Mohammed-Ashrafujjaman/HIT137_Assignment_2_SYDN_17.git)
+https://github.com/Mohammed-Ashrafujjaman/HIT137_Assignment_2_SYDN_17.git
 ```
 2. Open VS Code or any other IDE in your PC.
 3. Make sure you have all the dependencies and extensions.
