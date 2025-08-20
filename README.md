@@ -14,12 +14,15 @@ This is a group assignment for the "Software Now" module.
 ## 🛠 Programming language used
 - Python
 
+<!-- 
 ```
 ## 📁 Folder Structure
 src/       → Main source code (.py)
 docs/      → Assignment documents or reports
 assets/    → Images and media
 ```
+-->
+
 
 ## 🔧 How to Run
 1. Clone this repository:
