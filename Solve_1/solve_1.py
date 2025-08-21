@@ -39,3 +39,53 @@ When run, your program should automatically:
     4. Verify the decryption matches the original 
 
 '''
+
+'''
+Group Name: Sydney Group 17
+Group Members: 4
+Mohammed Ashrafujjaman Hera - 391197
+Pujan Dey  - 395076
+Shaown Imtiaz - 396121
+Al-Amin Dhaly - 395230
+'''
+
+import os
+
+def encryption(plain_data):
+    pass
+
+def decryption(encrypted_data):
+    pass
+
+def verification(original_data, decrypted_data):
+    pass
+
+def main():   
+    # below code find the absolute directory/folder path of the current python execution file
+    cwd = os.path.dirname(__file__)
+    # manual debug
+    # print(cwd)
+    
+    # This code below join the "raw_text.txt" file location with the current working directory
+    # This is essential because vs-code sometimes execute code from the parents directory instead of local directory
+    path = os.path.join(cwd,"raw_text.txt")
+    try: 
+        # Opening file in read mode
+        with open(path,'r') as original_data:
+            # this function below Encrypt the original data to produce encrypted text
+            encrypted_data = encryption(original_data)
+            
+            # this function below Decrypt the encrypted data to plain text
+            decrypted_data = decryption(encrypted_data)
+            
+            # this dunction below verify if the original data and decrypted(plain text) is the same or not
+            verification(original_data, decrypted_data)
+            
+            # Manual debugging
+            # print(raw_data.read())
+    except Exception as e:
+        print(f"\nFile Does not exist in this directory:\n{cwd}\n")
+
+# this is to ensure that, this python file execute directly form here
+if __name__ == "__main__":
+    main()

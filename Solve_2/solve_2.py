@@ -27,3 +27,12 @@ o "Most Variable: Station DEF: StdDev 12.8°C"
 • If multiple stations tie, list all of them
 
 '''
+
+'''
+Group Name: Sydney Group 17
+Group Members: 4
+Mohammed Ashrafujjaman Hera - 391197
+Pujan Dey  - 395076
+Shaown Imtiaz - 396121
+Al-Amin Dhaly - 395230
+'''
