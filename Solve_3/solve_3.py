@@ -30,3 +30,12 @@ Enter the side length: 300
 Enter the recursion depth: 3
 
 '''
+
+'''
+Group Name: Sydney Group 17
+Group Members: 4
+Mohammed Ashrafujjaman Hera - 391197
+Pujan Dey  - 395076
+Shaown Imtiaz - 396121
+Al-Amin Dhaly - 395230
+'''
