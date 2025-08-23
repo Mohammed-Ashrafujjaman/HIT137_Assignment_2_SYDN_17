@@ -36,3 +36,57 @@ Pujan Dey  - 395076
 Shaown Imtiaz - 396121
 Al-Amin Dhaly - 395230
 '''
+
+#Alamin Dhaly_Preprocessing
+
+import os,glob
+import pandas as pd
+
+
+#Combining the CSVs
+
+path = "temperatures"
+all_files = glob.glob(os.path.join(path, "stations_group_*.csv"))
+
+dfs = [pd.read_csv(f) for f in all_files]
+df = pd.concat(dfs, ignore_index=True)
+
+#Standardize Column Names
+
+df.columns = [c.strip().capitalize() for c in df.columns]
+
+#Reshaping the Format
+
+df_long = df.melt(
+    id_vars=["Station_name", "Stn_id", "Lat", "Lon"],
+    var_name="Month",
+    value_name="Temperature"
+)
+
+#Handlimg Missing Values
+
+df_long = df_long.dropna(subset=["Temperature"])
+
+
+#Mapping Months to Season
+
+season_map = {
+    "December": "Summer", "January": "Summer", "February": "Summer",
+    "March": "Autumn", "April": "Autumn", "May": "Autumn",
+    "June": "Winter", "July": "Winter", "August": "Winter",
+    "September": "Spring", "October": "Spring", "November": "Spring"
+}
+
+df_long["Season"] = df_long["Month"].map(season_map)
+
+#Storing Preprocessed Data
+
+output_file = "preprocessed_temperatures.csv"
+df_long.to_csv(output_file, index=False)
+
+print(f"Preprocessing complete! Cleaned data saved to {output_file}")
+
+#Display
+print(df_long.head())
+
+#End of Data Preprocessing
