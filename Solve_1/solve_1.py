@@ -51,8 +51,43 @@ Al-Amin Dhaly - 395230
 
 import os
 
+#Alamin Dhly (Encryption)
 def encryption(plain_data):
-    pass
+    #User input
+    shift1 = int(input("Enter shift1: "))
+    shift2 = int(input("Enter shift2: "))
+
+    encrypted = ""
+    for char in plain_data:
+        if char.islower():
+            if 'a' <= char <= 'm':
+                # Shift forward by shift1 * shift2
+                new_char = chr((ord(char) - ord('a') + shift1 * shift2) % 26 + ord('a'))
+            else:  # n-z
+                # Shift backward by shift1 + shift2
+                new_char = chr((ord(char) - ord('a') - (shift1 + shift2)) % 26 + ord('a'))
+        elif char.isupper():
+            if 'A' <= char <= 'M':
+                # Shift backward by shift1
+                new_char = chr((ord(char) - ord('A') - shift1) % 26 + ord('A'))
+            else:  # N-Z
+                # Shift forward by shift2 squared
+                new_char = chr((ord(char) - ord('A') + shift2**2) % 26 + ord('A'))
+        else:
+            # Leave spaces, numbers, special characters unchanged
+            new_char = char
+        encrypted += new_char
+
+    # Write encrypted content to file AFTER loop (merge-safe)
+    cwd = os.path.dirname(__file__)
+    path = os.path.join(cwd, "encrypted_text.txt")
+    with open(path, 'w') as f:
+        f.write(encrypted)
+
+    return encrypted
+
+
+#Encryption Part Ends
 
 def decryption(encrypted_data):
     pass
