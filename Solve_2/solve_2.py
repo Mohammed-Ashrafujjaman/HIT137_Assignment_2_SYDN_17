@@ -37,56 +37,132 @@ Shaown Imtiaz - 396121
 Al-Amin Dhaly - 395230
 '''
 
-#Alamin Dhaly_Preprocessing
-
 import os,glob
 import pandas as pd
+import matplotlib.pyplot as plt
+
+def reading_dataset(dateset_name):
+    # reading current directory of this pyhton file
+    cwd = os.path.dirname(__file__)
+    # joining the dataset name to the directory path
+    path = os.path.join(cwd, dateset_name)
+    # reading the dataset and returning it
+    return pd.read_csv(path)
+    
+#Alamin Dhaly --> Preprocessing
+def preprocessing_data():
+    # defining directory path so that is can be execute from any where but still open the python file directory
+    cwd = os.path.dirname(__file__)
+    # Joining the "temperatures" folder/directory with the current working file's directory
+    path = os.path.join(cwd, "temperatures")
+    # Creating list of path for each csv files 
+    all_files = glob.glob(os.path.join(path, "stations_group_*.csv"))
+
+    # Combining all the CSVs into one file
+    dfs = [pd.read_csv(f) for f in all_files]
+    df = pd.concat(dfs, ignore_index=True)
+    
+    # Checking if there is any Null value
+    print("\nCounting Null values in the dataset: \n")
+    print(df.isnull().sum())
+    
+
+    # Reformating Column Names -- Just capitalizing the coulumn names
+    df.columns = [c.strip().capitalize() for c in df.columns]
+
+    # Reshaping the Format
+    reshaped_df = df.melt(
+        id_vars=["Station_name", "Stn_id", "Lat", "Lon"],
+        var_name="Month",
+        value_name="Temperature"
+    )
+    
+    # Checking if there is any missing value after reshaping the dataset
+    print("\nrecounting Null values in the dataset after reshaping dataset: \n")
+    print(reshaped_df.isnull().sum())
+    # since there are no null values, we don't need to handle missing value
+    # print(df.info())
+    # print(df_long.info())
+
+    # #Handlimg Missing Values
+    # df_long = df_long.dropna(subset=["Temperature"])
 
 
-#Combining the CSVs
+    # Mapping Months to Season
+    season_map = {
+        "December": "Summer", "January": "Summer", "February": "Summer",
+        "March": "Autumn", "April": "Autumn", "May": "Autumn",
+        "June": "Winter", "July": "Winter", "August": "Winter",
+        "September": "Spring", "October": "Spring", "November": "Spring"
+    }
 
-path = "temperatures"
-all_files = glob.glob(os.path.join(path, "stations_group_*.csv"))
+    # Adding new column in the dataset called "Season" according to months
+    reshaped_df["Season"] = reshaped_df["Month"].map(season_map)
 
-dfs = [pd.read_csv(f) for f in all_files]
-df = pd.concat(dfs, ignore_index=True)
+    # Saving Preprocessed Data to local file
+    output_file = os.path.join(cwd,"preprocessed_temperatures.csv")
+    reshaped_df.to_csv(output_file, index=False)
 
-#Standardize Column Names
+    print(f"\nPreprocessed dataset saved to {output_file}\n")
+    
+    
+    # Information of the preprocessed dataset
+    print(reshaped_df.info())
+    # Display small sample of preprocessed dataset
+    print(reshaped_df.head())
 
-df.columns = [c.strip().capitalize() for c in df.columns]
+    
+    
+# Imtiaz --> seasonal average findings
+def seasonal_average():
+    pass
 
-#Reshaping the Format
+# Pujan --> temperature range findings
+def temperature_range():
+    pass
 
-df_long = df.melt(
-    id_vars=["Station_name", "Stn_id", "Lat", "Lon"],
-    var_name="Month",
-    value_name="Temperature"
-)
+# Ashraf --> temperature stability findings
+def temperature_stability():
+    # reading Preprocessed dataset
+    df = reading_dataset("preprocessed_temperatures.csv")
+    
+    # Group by Station and calculate standard deviation of temperature
+    std_devs = df.groupby("Station_name")["Temperature"].std()
+    
+    # showing the standerd deviation in a bar chart
+    plt.figure(figsize=(18, 6))  
+    std_devs.plot(kind='bar', color='skyblue')
+    
+    plt.title("Temperature Standard Deviation by Station")
+    plt.ylabel("Standard Deviation (in Celsius)")
+    plt.xlabel("Station Name")
+    # Rotate station names in vartical order for better readability
+    plt.xticks(rotation=90)  
+    plt.tight_layout()
 
-#Handlimg Missing Values
-
-df_long = df_long.dropna(subset=["Temperature"])
+    plt.show()
 
 
-#Mapping Months to Season
+    # Finding minimum and maximum standard deviation
+    min_std = std_devs.min()
+    max_std = std_devs.max()
 
-season_map = {
-    "December": "Summer", "January": "Summer", "February": "Summer",
-    "March": "Autumn", "April": "Autumn", "May": "Autumn",
-    "June": "Winter", "July": "Winter", "August": "Winter",
-    "September": "Spring", "October": "Spring", "November": "Spring"
-}
+    # Finding out the stations with min and max standard deviation
+    most_stable = std_devs[std_devs == min_std]
+    most_variable = std_devs[std_devs == max_std]
 
-df_long["Season"] = df_long["Month"].map(season_map)
+    # Write results to a file
+    output_file = os.path.join(os.path.dirname(__file__),"temperature_stability_stations.txt")
+    with open(output_file, "w") as f:
+        for station, std in most_stable.items():
+            f.write(f"Most Stable: {station}: StdDev {std:.1f} C\n")
+        for station, std in most_variable.items():
+            f.write(f"Most Variable: {station}: StdDev {std:.1f} C\n")
 
-#Storing Preprocessed Data
 
-output_file = "preprocessed_temperatures.csv"
-df_long.to_csv(output_file, index=False)
 
-print(f"Preprocessing complete! Cleaned data saved to {output_file}")
-
-#Display
-print(df_long.head())
-
-#End of Data Preprocessing
+if __name__ == "__main__":
+    preprocessing_data()
+    # seasonal_average()
+    # temperature_range()
+    temperature_stability()
