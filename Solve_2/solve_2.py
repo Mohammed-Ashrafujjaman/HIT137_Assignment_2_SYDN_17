@@ -126,43 +126,61 @@ def temperature_stability():
     # reading Preprocessed dataset
     df = reading_dataset("preprocessed_temperatures.csv")
     
-    # Group by Station and calculate standard deviation of temperature
-    std_devs = df.groupby("Station_name")["Temperature"].std()
+    # Group by Station name to 
+    station_group = df.groupby("Station_name")
+
+    # only select the 'Temperature' column from each group of stations
+    temperature_groups = station_group["Temperature"]
+    # print(f"list: {temperature_groups.head()}")
+
+    # getting the standard deviation for each group of stations
+    std_deviation = temperature_groups.std()
+    # print(f"{std_deviation.head(5)}")
     
+    # Finding out the  minimum and maximum standard deviation from the station group
+    min_std = std_deviation.min()
+    max_std = std_deviation.max()
+
+    
+    # Assign colors: default = grey, min = green, max = red
+    colors = []
+    for val in std_deviation:
+        if val == min_std:
+            colors.append("green")
+        elif val == max_std:
+            colors.append("red")
+        else:
+            colors.append("skyblue")
+            
+            
     # showing the standerd deviation in a bar chart
     plt.figure(figsize=(18, 6))  
-    std_devs.plot(kind='bar', color='skyblue')
+    std_deviation.plot(kind='bar', color=colors)
     
-    plt.title("Temperature Standard Deviation by Station")
+    plt.title("Temperature Standard Deviation by Station Name")
     plt.ylabel("Standard Deviation (in Celsius)")
-    plt.xlabel("Station Name")
+    plt.xlabel("Stations Name")
     # Rotate station names in vartical order for better readability
     plt.xticks(rotation=90)  
     plt.tight_layout()
 
     plt.show()
 
-
-    # Finding minimum and maximum standard deviation
-    min_std = std_devs.min()
-    max_std = std_devs.max()
-
     # Finding out the stations with min and max standard deviation
-    most_stable = std_devs[std_devs == min_std]
-    most_variable = std_devs[std_devs == max_std]
+    stable_station = std_deviation[std_deviation == min_std]
+    variable_station = std_deviation[std_deviation == max_std]
 
-    # Write results to a file
+    # Writing results into a file
     output_file = os.path.join(os.path.dirname(__file__),"temperature_stability_stations.txt")
     with open(output_file, "w") as f:
-        for station, std in most_stable.items():
-            f.write(f"Most Stable: {station}: StdDev {std:.1f} C\n")
-        for station, std in most_variable.items():
-            f.write(f"Most Variable: {station}: StdDev {std:.1f} C\n")
+        f.write(f"Most Stable: {stable_station.index[0]}: StdDev {stable_station.values[0]:.1f} C\n")
+        f.write(f"Most Variable: {variable_station.index[0]}: StdDev {variable_station.values[0]:.1f} C\n")
 
 
 
 if __name__ == "__main__":
+    # Function calling for different tasks
     preprocessing_data()
-    # seasonal_average()
-    # temperature_range()
+    seasonal_average()
+    temperature_range()
     temperature_stability()
