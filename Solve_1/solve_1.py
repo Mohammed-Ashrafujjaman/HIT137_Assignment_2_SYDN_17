@@ -89,8 +89,41 @@ def encryption(plain_data):
 
 #Encryption Part Ends
 
+# Imtiaz (Decryption)
 def decryption(encrypted_data):
-    pass
+    # User must enter same shift1 and shift2 used during encryption
+    shift1 = int(input("Enter shift1 (for decryption): "))
+    shift2 = int(input("Enter shift2 (for decryption): "))
+
+    decrypted = ""
+    for char in encrypted_data:
+        if char.islower():
+            if 'a' <= char <= 'm':
+                # Reverse of encryption: subtract shift1 * shift2
+                new_char = chr((ord(char) - ord('a') - (shift1 * shift2)) % 26 + ord('a'))
+            else:  # n-z
+                # Reverse: add shift1 + shift2
+                new_char = chr((ord(char) - ord('a') + (shift1 + shift2)) % 26 + ord('a'))
+        elif char.isupper():
+            if 'A' <= char <= 'M':
+                # Reverse: add shift1
+                new_char = chr((ord(char) - ord('A') + shift1) % 26 + ord('A'))
+            else:  # N-Z
+                # Reverse: subtract shift2 squared
+                new_char = chr((ord(char) - ord('A') - (shift2**2)) % 26 + ord('A'))
+        else:
+            # Leave unchanged
+            new_char = char
+        decrypted += new_char
+
+    # Write decrypted content to file
+    cwd = os.path.dirname(__file__)
+    path = os.path.join(cwd, "decrypted_text.txt")
+    with open(path, 'w') as f:
+        f.write(decrypted)
+
+    return decrypted
+#Decryption Part Ends
 
 def verification(original_data, decrypted_data):
     pass
