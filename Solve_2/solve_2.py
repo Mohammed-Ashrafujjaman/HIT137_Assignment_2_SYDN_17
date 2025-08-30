@@ -115,7 +115,30 @@ def preprocessing_data():
     
 # Imtiaz --> seasonal average findings
 def seasonal_average():
-    pass
+    # Reading the preprocessed dataset
+    df = reading_dataset("preprocessed_temperatures.csv")
+
+    # Drop missing values if any (important!)
+    df = df.dropna(subset=["Temperature"])
+
+    # Grouping by Season and calculating mean temperature
+    seasonal_avg = df.groupby("Season")["Temperature"].mean()
+
+    # Reorder seasons to match Australian order (Summer -> Autumn -> Winter -> Spring)
+    season_order = ["Summer", "Autumn", "Winter", "Spring"]
+    seasonal_avg = seasonal_avg.reindex(season_order)
+
+    # Save results to "average_temp.txt"
+    output_file = os.path.join(os.path.dirname(__file__), "average_temp.txt")
+    with open(output_file, "w") as f:
+        for season, avg_temp in seasonal_avg.items():
+            f.write(f"{season}: {avg_temp:.1f}°C\n")
+
+    # Print to console (for checking results)
+    print("\nSeasonal Average Temperatures:")
+    for season, avg_temp in seasonal_avg.items():
+        print(f"{season}: {avg_temp:.1f}°C")
+
 
 # Pujan --> temperature range findings
 def temperature_range():
