@@ -49,8 +49,23 @@ def input_validation(x, name):
     pass 
 
 def draw_edge(t, length, depth):
-    # assigned to Al-amin Dhaly
-    pass
+    # Base case: if depth is 0, just draw a straight line
+    # Al-Amin Dhaly's Part
+    if depth == 0:
+        t.forward(length)
+    else:
+        # Divide length into 3 smaller parts
+        segment = length / 3
+
+        # Recursive step
+        draw_edge(t, segment, depth - 1)  # First third
+        t.left(60)                        # Turn left to draw indentation
+        draw_edge(t, segment, depth - 1)  # First side of the triangle
+        t.right(120)                      # Turn right
+        draw_edge(t, segment, depth - 1)  # Second side of the triangle
+        t.left(60)                        # Turn back
+        draw_edge(t, segment, depth - 1)  # Last third
+
 
 def draw_pattern(sides, length, depth):
     # assigned to Ashraf
