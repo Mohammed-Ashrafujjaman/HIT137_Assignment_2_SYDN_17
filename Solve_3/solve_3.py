@@ -49,8 +49,23 @@ def input_validation(x, name):
     pass 
 
 def draw_edge(t, length, depth):
-    # assigned to Al-amin Dhaly
-    pass
+    # Base case: if depth is 0, just draw a straight line
+    # Al-Amin Dhaly's Part
+    if depth == 0:
+        t.forward(length)
+    else:
+        # Divide length into 3 smaller parts
+        segment = length / 3
+
+        # Recursive step
+        draw_edge(t, segment, depth - 1)  # First third
+        t.left(60)                        # Turn left to draw indentation
+        draw_edge(t, segment, depth - 1)  # First side of the triangle
+        t.right(120)                      # Turn right
+        draw_edge(t, segment, depth - 1)  # Second side of the triangle
+        t.left(60)                        # Turn back
+        draw_edge(t, segment, depth - 1)  # Last third
+
 
 def draw_pattern(sides, length, depth):
     # assigned to Ashraf
@@ -85,7 +100,24 @@ def draw_pattern(sides, length, depth):
 
 def main():
     # Main funciton -> Imtiaz
-    pass
+    
+    print(colored("\nPlease provide the values in only Interger number.\nCharacter input will be consider as assigning default values.\n","yellow"))
+    sides = input("Enter the number of sides(default value 4): ")
+    length = input("Enter the side length(default value 300): ")
+    depth = input("Enter the recursion depth(default value 3): ")
+ 
+    sides = input_validation(sides,"sides")
+    if sides > 6:
+        print(colored("user provided 'sides' more than 6, drawing might not colpletely visible in turtle GUI.\n","red"))
+    length = input_validation(length,"length")
+    if length > 400:
+        print(colored("user provided 'sides' more than 400, drawing might not colpletely visible in turtle GUI.\n","red"))
+    depth = input_validation(depth,"depth")
+    if depth > 4:
+        print(colored("user provided 'depth' more than 4, drawing might be slow and take time to complete.\n","red"))
+    
+    draw_pattern(sides, length, depth)
+ 
 
     
 if __name__ == "__main__":
