@@ -68,7 +68,24 @@ def draw_pattern(sides, length, depth):
 
 def main():
     # Main funciton -> Imtiaz
-    pass
+    
+    print(colored("\nPlease provide the values in only Interger number.\nCharacter input will be consider as assigning default values.\n","yellow"))
+    sides = input("Enter the number of sides(default value 4): ")
+    length = input("Enter the side length(default value 300): ")
+    depth = input("Enter the recursion depth(default value 3): ")
+ 
+    sides = input_validation(sides,"sides")
+    if sides > 6:
+        print(colored("user provided 'sides' more than 6, drawing might not colpletely visible in turtle GUI.\n","red"))
+    length = input_validation(length,"length")
+    if length > 400:
+        print(colored("user provided 'sides' more than 400, drawing might not colpletely visible in turtle GUI.\n","red"))
+    depth = input_validation(depth,"depth")
+    if depth > 4:
+        print(colored("user provided 'depth' more than 4, drawing might be slow and take time to complete.\n","red"))
+    
+    draw_pattern(sides, length, depth)
+ 
 
     
 if __name__ == "__main__":
