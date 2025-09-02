@@ -110,10 +110,14 @@ def decryption(encrypted_data,shift1,shift2):
         f.write(decrypted)
 
     return decrypted
-#Decryption Part Ends
 
+# Pujan → Verification
+# -------------------------------
 def verification(original_data, decrypted_data):
-    pass
+    if original_data == decrypted_data:
+        print("✅ Verification successful: Decrypted text matches the original.")
+    else:
+        print("❌ Verification failed: Decrypted text does not match the original.")
 
 def main():   
     #User input
