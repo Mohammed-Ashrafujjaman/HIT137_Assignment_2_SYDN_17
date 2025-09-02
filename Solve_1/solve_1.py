@@ -1,44 +1,3 @@
-'''
-Create a program that reads the text file "raw_text.txt", encrypts its contents using a 
-simple encryption method, and writes the encrypted text to a new file 
-"encrypted_text.txt". Then create a function to decrypt the content and a function to 
-verify the decryption was successful. 
-
-Requirements:
- 
-    The encryption should take two user inputs (shift1, shift2), and follow these rules: 
-    • For lowercase letters: 
-        o If the letter is in the first half of the alphabet (a-m): shift forward by shift1 * 
-        shift2 positions 
-        o If the letter is in the second half (n-z): shift backward by shift1 + shift2 
-        positions 
-    • For uppercase letters: 
-        o If the letter is in the first half (A-M): shift backward by shift1 positions 
-        o If the letter is in the second half (N-Z): shift forward by shift2² positions 
-        (shift2 squared) 
-    • Other characters: 
-        o Spaces, tabs, newlines, special characters, and numbers remain 
-        unchanged 
-
-Main Functions to Implement:
- 
-    Encryption function: Reads from "raw_text.txt" and writes encrypted content to 
-    "encrypted_text.txt". 
-
-    Decryption function: Reads from "encrypted_text.txt" and writes the decrypted 
-    content to "decrypted_text.txt". 
-
-    Verification function: Compares "raw_text.txt" with "decrypted_text.txt" and prints 
-    whether the decryption was successful or not. 
-    Program Behavior 
-
-When run, your program should automatically:  
-    1. Prompt the user for shift1 and shift2 values 
-    2. Encrypt the contents of "raw_text.txt" 
-    3. Decrypt the encrypted file 
-    4. Verify the decryption matches the original 
-
-'''
 
 '''
 Group Name: Sydney Group 17
@@ -50,12 +9,41 @@ Al-Amin Dhaly - 395230
 '''
 
 import os
+from termcolor import colored # this is for colored output in terminal
+
+# Input validation and filtering
+def input_validation(users_input,shift_num):
+    try:
+        # integer number
+        # Trying to convert string input from user into a Interger number
+        temp_x = int(users_input)
+        users_input = temp_x
+        print(f"\nFor {shift_num}: ")
+        # Green Colored text for better user experience.
+        print(colored("User provided an Integer number.","green"))
+    except ValueError:
+        try:
+            # float number
+            # Trying to convert string input from user into a float number then an interger number
+            float_x = float(users_input)
+            round_x = round(float_x)
+            users_input = int(round_x)
+            print(f"\nFor {shift_num}: ")
+            print(colored(f"User provided a float value for the {shift_num}.\nConverting it to integer.\n","blue"))           
+        except ValueError:
+            # In case of no value input by the user it will assign the default values accordingly
+            if users_input == "" or users_input.isalpha(): # placing a default values
+                if shift_num == "shift_1":
+                    users_input = 5
+                else:
+                    users_input = 7
+                
+                print(f"\nFor {shift_num}")
+                print(colored(f"user did not provide any value or input 'characters/strings' for {shift_num}.\nDefault value={users_input}, Assigned.\n","cyan"))       
+    return users_input
 
 #Alamin Dhly (Encryption)
-def encryption(plain_data):
-    #User input
-    shift1 = int(input("Enter shift1: "))
-    shift2 = int(input("Enter shift2: "))
+def encryption(plain_data,shift1,shift2):
 
     encrypted = ""
     for char in plain_data:
@@ -90,11 +78,8 @@ def encryption(plain_data):
 #Encryption Part Ends
 
 # Imtiaz (Decryption)
-def decryption(encrypted_data):
-    # User must enter same shift1 and shift2 used during encryption
-    shift1 = int(input("Enter shift1 (for decryption): "))
-    shift2 = int(input("Enter shift2 (for decryption): "))
-
+def decryption(encrypted_data,shift1,shift2):
+    print("\ndecryption started!!\n")
     decrypted = ""
     for char in encrypted_data:
         if char.islower():
@@ -116,8 +101,10 @@ def decryption(encrypted_data):
             new_char = char
         decrypted += new_char
 
+    print("New file creation for decryption data!!")
     # Write decrypted content to file
     cwd = os.path.dirname(__file__)
+    print(f"cwd in decrypt file: {cwd}")
     path = os.path.join(cwd, "decrypted_text.txt")
     with open(path, 'w') as f:
         f.write(decrypted)
@@ -133,6 +120,15 @@ def verification(original_data, decrypted_data):
         print("❌ Verification failed: Decrypted text does not match the original.")
 
 def main():   
+    #User input
+    shift1 = input("Enter shift_1 for both encryptions and decryptions(default 5): ")
+    shift2 = input("Enter shift_2 for both encryptions and decryptions(default 7): ")
+    
+    #Input validation
+    shift1 = input_validation(shift1,"shift_1")
+    shift2 = input_validation(shift2,"shift_2")
+    # print("\ninput validation complete!!\n")
+   
     # below code find the absolute directory/folder path of the current python execution file
     cwd = os.path.dirname(__file__)
     # manual debug
@@ -141,22 +137,26 @@ def main():
     # This code below join the "raw_text.txt" file location with the current working directory
     # This is essential because vs-code sometimes execute code from the parents directory instead of local directory
     path = os.path.join(cwd,"raw_text.txt")
+    original_data =""
     try: 
         # Opening file in read mode
-        with open(path,'r') as original_data:
-            # this function below Encrypt the original data to produce encrypted text
-            encrypted_data = encryption(original_data)
-            
-            # this function below Decrypt the encrypted data to plain text
-            decrypted_data = decryption(encrypted_data)
-            
-            # this dunction below verify if the original data and decrypted(plain text) is the same or not
-            verification(original_data, decrypted_data)
-            
-            # Manual debugging
-            # print(raw_data.read())
+        with open(path,'r') as file:
+            original_data = file.read()
     except Exception as e:
-        print(f"\nFile Does not exist in this directory:\n{cwd}\n")
+        print(colored(f"\nFile Does not exist in this directory:\n{path}\n{e}\n","red"))
+        
+    # this function below Encrypt the original data to produce encrypted text
+    encrypted_data = encryption(original_data,shift1,shift2)
+    # print("\nencryption complete!!\n")
+    # this function below Decrypt the encrypted data to plain text
+    decrypted_data = decryption(encrypted_data,shift1,shift2)
+    
+
+    # this dunction below verify if the original data and decrypted(plain text) is the same or not
+    # verification(original_data, decrypted_data)
+    
+    # Manual debugging
+    # print(raw_data.read())
 
 # this is to ensure that, this python file execute directly form here
 if __name__ == "__main__":
