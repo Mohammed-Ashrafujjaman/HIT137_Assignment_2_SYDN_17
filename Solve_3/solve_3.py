@@ -46,7 +46,36 @@ from termcolor import colored
 
 def input_validation(x, name):
     # Assigned to pujan
-    pass 
+    try:
+        # integer number
+        # Trying to convert string input from user into a Interger number
+        temp_x = int(x)
+        x = temp_x
+        print(f"\nFor {name}: ")
+        # Green Colored text for better user experience.
+        print(colored("User provided an Integer number.","green"))
+    except ValueError:
+        try:
+            # float number
+            # Trying to convert string input from user into a float number then an interger number
+            float_x = float(x)
+            round_x = round(float_x)
+            x = int(round_x)
+            print(f"\nFor {name}: ")
+            print(colored(f"User provided a float value for the {name}.\nConverting it to integer.\n","blue"))           
+        except ValueError:
+            # In case of no value input by the user it will assign the default values accordingly
+            if x == "" or x.isalpha(): # placing a default values
+                if name == "sides":
+                    x = 4
+                elif name == "length":
+                    x = 300
+                else:
+                    x = 3
+                
+                print(f"\nFor {name}")
+                print(colored(f"user did not provide any value or input 'characters/strings' for {name}.\nDefault value={x}, Assigned.\n","cyan"))       
+    return x
 
 def draw_edge(t, length, depth):
     # Base case: if depth is 0, just draw a straight line

@@ -141,8 +141,31 @@ def seasonal_average():
 
 
 # Pujan --> temperature range findings
+
 def temperature_range():
-    pass
+    df = reading_dataset("preprocessed_temperatures.csv")
+    df = df.dropna(subset=["Temperature"])
+
+    station_group = df.groupby("Station_name")["Temperature"]
+
+    # Calculate min, max, and range for each station
+    station_stats = station_group.agg(["min", "max"])
+    station_stats["range"] = station_stats["max"] - station_stats["min"]
+
+    # Find max range
+    max_range = station_stats["range"].max()
+    largest_range_stations = station_stats[station_stats["range"] == max_range]
+
+    # Save to file
+    output_file = os.path.join(os.path.dirname(__file__), "largest_temp_range_station.txt")
+    with open(output_file, "w") as f:
+        for station, row in largest_range_stations.iterrows():
+            f.write(
+                f"{station}: Range {row['range']:.1f}°C "
+                f"(Max: {row['max']:.1f}°C, Min: {row['min']:.1f}°C)\n"
+            )
+
+    print("✅ Largest temperature range results written to largest_temp_range_station.txt")
 
 # Ashraf --> temperature stability findings
 def temperature_stability():
