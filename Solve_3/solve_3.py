@@ -104,13 +104,13 @@ def main():
     depth = input("Enter the recursion depth(default value 3): ")
  
     sides = input_validation(sides,"sides")
-    if sides > 6:
+    if sides >= 6:
         print(colored("user provided 'sides' more than 6, drawing might not colpletely visible in turtle GUI.\n","red"))
     length = input_validation(length,"length")
-    if length > 400:
-        print(colored("user provided 'sides' more than 400, drawing might not colpletely visible in turtle GUI.\n","red"))
+    if length >= 400:
+        print(colored("user provided 'side lengths' more than 400, drawing might not colpletely visible in turtle GUI.\n","red"))
     depth = input_validation(depth,"depth")
-    if depth > 4:
+    if depth >= 4:
         print(colored("user provided 'depth' more than 4, drawing might be slow and take time to complete.\n","red"))
     
     draw_pattern(sides, length, depth)

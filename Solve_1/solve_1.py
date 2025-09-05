@@ -65,6 +65,7 @@ def encryption(plain_data, shift1, shift2):
     path = os.path.join(cwd, "encrypted_text.txt")
     with open(path, 'w') as f:
         f.write(encrypted)
+        print(colored("New file created for encrypted data!", "green"))
 
     return encrypted
 
@@ -72,7 +73,7 @@ def encryption(plain_data, shift1, shift2):
 
 # Imtiaz (Decryption)
 def decryption(encrypted_data, shift1, shift2):
-    print("\nDecryption started!!\n")
+    # print("\nDecryption started!!\n")
     decrypted = ""
     for char in encrypted_data:
         if char.islower():
@@ -89,11 +90,12 @@ def decryption(encrypted_data, shift1, shift2):
             new_char = char
         decrypted += new_char
 
-    print("New file creation for decryption data!!")
+    
     cwd = os.path.dirname(__file__)
     path = os.path.join(cwd, "decrypted_text.txt")
     with open(path, 'w') as f:
         f.write(decrypted)
+        print(colored("New file created for decryption data!", "green"))
 
     return decrypted
 
@@ -101,9 +103,9 @@ def decryption(encrypted_data, shift1, shift2):
 # -------------------------------
 def verification(original_data, decrypted_data):
     if original_data == decrypted_data:
-        print("✅ Verification successful: Decrypted text matches the original.")
+        print(colored("Verification: Decrypted text matches the original.\n","green"))
     else:
-        print("❌ Verification failed: Decrypted text does not match the original.")
+        print(colored("Verification: Decrypted text does not match the original.\n","red"))
 
 def main():   
     #User input
@@ -116,12 +118,12 @@ def main():
     # print("\ninput validation complete!!\n")
    
     # below code find the absolute directory/folder path of the current python execution file
+    # This is essential because vs-code sometimes execute code from the parents directory instead of local directory
     cwd = os.path.dirname(__file__)
     # manual debug
     # print(cwd)
     
     # This code below join the "raw_text.txt" file location with the current working directory
-    # This is essential because vs-code sometimes execute code from the parents directory instead of local directory
     path = os.path.join(cwd,"raw_text.txt")
     original_data =""
     try: 
@@ -139,7 +141,7 @@ def main():
     
 
     # this dunction below verify if the original data and decrypted(plain text) is the same or not
-    # verification(original_data, decrypted_data)
+    verification(original_data, decrypted_data)
     
     # Manual debugging
     # print(raw_data.read())
@@ -147,3 +149,11 @@ def main():
 # this is to ensure that, this python file execute directly form here
 if __name__ == "__main__":
     main()
+    
+'''
+References:
+https://thepythoncode.com/article/implement-caesar-cipher-in-python
+
+https://dev.to/immah/implementing-a-caesar-cipher-program-in-python-1gf3
+
+'''
