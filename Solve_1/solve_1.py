@@ -45,55 +45,93 @@ def input_validation(users_input,shift_num):
 #Alamin Dhly (Encryption)
 def encryption(plain_data, shift1, shift2):
     encrypted = ""
+    markers = []
     for char in plain_data:
         if char.islower():
             if 'a' <= char <= 'm':
-                new_char = chr((ord(char) - ord('a') + shift1 * shift2) % 26 + ord('a'))
-            else:  # n-z
-                new_char = chr((ord(char) - ord('a') - (shift1 + shift2)) % 26 + ord('a'))
+                # lowercase a-m → forward shift (shift1 * shift2)
+                shift = shift1 * shift2
+                new_char = chr((ord(char) - ord('a') + shift) % 26 + ord('a'))
+                # marker is to save the shift direction and shift rules to reverse later
+                # marker 0 means 'a-m → forward shift (shift1 * shift2)'
+                marker = 0
+            else:
+                # lowercase n-z → backward shift(shift 1 + shift 2)
+                shift = -(shift1 + shift2)
+                new_char = chr((ord(char) - ord('a') + shift) % 26 + ord('a'))
+                # marker is to save the shift direction and shift rules to reverse later
+                # marker 1 means 'backward shift (shift 1 + shift 2)'
+                marker = 1
         elif char.isupper():
             if 'A' <= char <= 'M':
-                new_char = chr((ord(char) - ord('A') - shift1) % 26 + ord('A'))
-            else:  # N-Z
-                new_char = chr((ord(char) - ord('A') + shift2**2) % 26 + ord('A'))
+                # uppercase A-M → backward shift
+                shift = -shift1
+                new_char = chr((ord(char) - ord('A') + shift) % 26 + ord('A'))
+                # marker 2 means 'backward shift'
+                marker = 2
+            else:
+                # uppercase N-Z → forward shift
+                shift = shift2 ** 2
+                new_char = chr((ord(char) - ord('A') + shift) % 26 + ord('A'))
+                # market 3 means 'uppercase N-Z → forward shift(shift**2)"
+                marker = 3
         else:
             new_char = char
+            # marker 'x' means all other characters
+            marker = 'x' 
+            
         encrypted += new_char
+        # preserving markers according to index value of the original text.
+        markers.append(marker)
 
     # Write encrypted content to file
     cwd = os.path.dirname(__file__)
     path = os.path.join(cwd, "encrypted_text.txt")
     with open(path, 'w') as f:
         f.write(encrypted)
+        print(colored("New file created for encrypted data!", "green"))
 
-    return encrypted
+    return encrypted,markers
 
 #Encryption Part Ends
 
 # Imtiaz (Decryption)
-def decryption(encrypted_data, shift1, shift2):
-    print("\nDecryption started!!\n")
+def decryption(encrypted_data, markers, shift1, shift2):
+    # print("\nDecryption started!!\n")
     decrypted = ""
-    for char in encrypted_data:
-        if char.islower():
-            if 'a' <= char <= 'm':
-                new_char = chr((ord(char) - ord('a') - (shift1 * shift2)) % 26 + ord('a'))
-            else:  # n-z
-                new_char = chr((ord(char) - ord('a') + (shift1 + shift2)) % 26 + ord('a'))
-        elif char.isupper():
-            if 'A' <= char <= 'M':
-                new_char = chr((ord(char) - ord('A') + shift1) % 26 + ord('A'))
-            else:  # N-Z
-                new_char = chr((ord(char) - ord('A') - (shift2**2)) % 26 + ord('A'))
+    for char, marker in zip(encrypted_data, markers):
+        # Based on marker we are applying the reverse shifting calculation to retrieve the original text
+        # without the markers all the characters does not return to its original form
+        # while encrypting some letters inter-change from upper to lower and vise versa. 
+        # by implenting markers we are preserving the original shifting rules to reverse accordingly
+        if marker == 0:
+            # for 'a' - 'm' backward shift "-(shift1 * shift2)" opposite of encryption method
+            shift = -(shift1 * shift2)
+            new_char = chr((ord(char) - ord('a') + shift) % 26 + ord('a'))
+        elif marker == 1:
+            # for 'n' - 'z' forward shift "+(shift1 + shift2)" opposite of encryption method
+            shift = (shift1 + shift2)
+            new_char = chr((ord(char) - ord('a') + shift) % 26 + ord('a'))
+        elif marker == 2:
+            # for 'A' - 'Z' forward shift "+shift1"
+            shift = shift1
+            new_char = chr((ord(char) - ord('A') + shift) % 26 + ord('A'))
+        elif marker == 3:
+            # for 'N' - 'Z' backward shift '-shift2 ** 2'
+            shift = -(shift2 ** 2)
+            new_char = chr((ord(char) - ord('A') + shift) % 26 + ord('A'))
         else:
-            new_char = char
+            # all other character remains unchange
+            new_char = char  
+            
         decrypted += new_char
 
-    print("New file creation for decryption data!!")
+    
     cwd = os.path.dirname(__file__)
     path = os.path.join(cwd, "decrypted_text.txt")
     with open(path, 'w') as f:
         f.write(decrypted)
+        print(colored("New file created for decryption data!", "green"))
 
     return decrypted
 
@@ -103,9 +141,9 @@ def decryption(encrypted_data, shift1, shift2):
 
 def verification(original_data, decrypted_data):
     if original_data == decrypted_data:
-        print("✅ Verification successful: Decrypted text matches the original.")
+        print(colored("Verification: Decrypted text matches the original.\n","green"))
     else:
-        print("❌ Verification failed: Decrypted text does not match the original.")
+        print(colored("Verification: Decrypted text does not match the original.\n","red"))
 
 def main():   
     #User input
@@ -118,12 +156,12 @@ def main():
     # print("\ninput validation complete!!\n")
    
     # below code find the absolute directory/folder path of the current python execution file
+    # This is essential because vs-code sometimes execute code from the parents directory instead of local directory
     cwd = os.path.dirname(__file__)
     # manual debug
     # print(cwd)
     
     # This code below join the "raw_text.txt" file location with the current working directory
-    # This is essential because vs-code sometimes execute code from the parents directory instead of local directory
     path = os.path.join(cwd,"raw_text.txt")
     original_data =""
     try: 
@@ -134,14 +172,14 @@ def main():
         print(colored(f"\nFile Does not exist in this directory:\n{path}\n{e}\n","red"))
         
     # this function below Encrypt the original data to produce encrypted text
-    encrypted_data = encryption(original_data,shift1,shift2)
+    encrypted_data,markers = encryption(original_data,shift1,shift2)
     # print("\nencryption complete!!\n")
     # this function below Decrypt the encrypted data to plain text
-    decrypted_data = decryption(encrypted_data,shift1,shift2)
+    decrypted_data = decryption(encrypted_data,markers,shift1,shift2)
     
 
     # this dunction below verify if the original data and decrypted(plain text) is the same or not
-    # verification(original_data, decrypted_data)
+    verification(original_data, decrypted_data)
     
     # Manual debugging
     # print(raw_data.read())
@@ -149,3 +187,13 @@ def main():
 # this is to ensure that, this python file execute directly form here
 if __name__ == "__main__":
     main()
+    
+'''
+References:
+https://thepythoncode.com/article/implement-caesar-cipher-in-python
+
+https://dev.to/immah/implementing-a-caesar-cipher-program-in-python-1gf3
+
+https://chat.openai.com (OpenAI GPT-4o, Sept 2025)
+
+'''

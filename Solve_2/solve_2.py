@@ -55,10 +55,6 @@ def preprocessing_data():
     # print(df.info())
     # print(df_long.info())
 
-    # #Handlimg Missing Values
-    # df_long = df_long.dropna(subset=["Temperature"])
-
-
     # Mapping Months to Season
     season_map = {
         "December": "Summer", "January": "Summer", "February": "Summer",
@@ -103,16 +99,15 @@ def seasonal_average():
     output_file = os.path.join(os.path.dirname(__file__), "average_temp.txt")
     with open(output_file, "w") as f:
         for season, avg_temp in seasonal_avg.items():
-            f.write(f"{season}: {avg_temp:.1f}°C\n")
+            f.write(f"{season}: {avg_temp:.1f} C\n")
 
     # Print to console (for checking results)
     print("\nSeasonal Average Temperatures:")
     for season, avg_temp in seasonal_avg.items():
-        print(f"{season}: {avg_temp:.1f}°C")
+        print(f"{season}: {avg_temp:.1f} C")
 
 
 # Pujan --> temperature range findings
-
 def temperature_range():
     df = reading_dataset("preprocessed_temperatures.csv")
     df = df.dropna(subset=["Temperature"])
@@ -132,11 +127,11 @@ def temperature_range():
     with open(output_file, "w") as f:
         for station, row in largest_range_stations.iterrows():
             f.write(
-                f"{station}: Range {row['range']:.1f}°C "
-                f"(Max: {row['max']:.1f}°C, Min: {row['min']:.1f}°C)\n"
+                f"{station}: Range {row['range']:.1f} C "
+                f"(Max: {row['max']:.1f} C, Min: {row['min']:.1f} C)\n"
             )
 
-    print("✅ Largest temperature range results written to largest_temp_range_station.txt")
+    print("Largest temperature range results written to largest_temp_range_station.txt")
 
 # Ashraf --> temperature stability findings
 def temperature_stability():
@@ -194,10 +189,25 @@ def temperature_stability():
         f.write(f"Most Variable: {variable_station.index[0]}: StdDev {variable_station.values[0]:.1f} C\n")
 
 
-
-if __name__ == "__main__":
+def main():
     # Function calling for different tasks
     preprocessing_data()
     seasonal_average()
     temperature_range()
     temperature_stability()
+
+
+if __name__ == "__main__":
+    main()
+    
+'''
+References:
+
+https://www.w3schools.com/python/pandas/ref_df_std.asp
+
+https://www.geeksforgeeks.org/pandas/python-pandas-dataframe-groupby/
+
+https://www.dataquest.io/blog/grouping-data-a-step-by-step-tutorial-to-groupby-in-pandas/
+
+https://www.geeksforgeeks.org/pandas/bar-plot-in-matplotlib/
+'''
