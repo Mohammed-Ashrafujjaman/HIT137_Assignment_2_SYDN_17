@@ -71,33 +71,26 @@ def encryption(plain_data, shift1, shift2):
 #Encryption Part Ends
 
 # Imtiaz (Decryption)
-def decryption(encrypted_data,shift1,shift2):
-    print("\ndecryption started!!\n")
+def decryption(encrypted_data, shift1, shift2):
+    print("\nDecryption started!!\n")
     decrypted = ""
     for char in encrypted_data:
         if char.islower():
             if 'a' <= char <= 'm':
-                # Reverse of encryption: subtract shift1 * shift2
                 new_char = chr((ord(char) - ord('a') - (shift1 * shift2)) % 26 + ord('a'))
             else:  # n-z
-                # Reverse: add shift1 + shift2
                 new_char = chr((ord(char) - ord('a') + (shift1 + shift2)) % 26 + ord('a'))
         elif char.isupper():
             if 'A' <= char <= 'M':
-                # Reverse: add shift1
                 new_char = chr((ord(char) - ord('A') + shift1) % 26 + ord('A'))
             else:  # N-Z
-                # Reverse: subtract shift2 squared
                 new_char = chr((ord(char) - ord('A') - (shift2**2)) % 26 + ord('A'))
         else:
-            # Leave unchanged
             new_char = char
         decrypted += new_char
 
     print("New file creation for decryption data!!")
-    # Write decrypted content to file
     cwd = os.path.dirname(__file__)
-    print(f"cwd in decrypt file: {cwd}")
     path = os.path.join(cwd, "decrypted_text.txt")
     with open(path, 'w') as f:
         f.write(decrypted)
