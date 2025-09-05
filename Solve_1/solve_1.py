@@ -43,37 +43,30 @@ def input_validation(users_input,shift_num):
     return users_input
 
 #Alamin Dhly (Encryption)
-def encryption(plain_data,shift1,shift2):
-
+def encryption(plain_data, shift1, shift2):
     encrypted = ""
     for char in plain_data:
         if char.islower():
             if 'a' <= char <= 'm':
-                # Shift forward by shift1 * shift2
                 new_char = chr((ord(char) - ord('a') + shift1 * shift2) % 26 + ord('a'))
             else:  # n-z
-                # Shift backward by shift1 + shift2
                 new_char = chr((ord(char) - ord('a') - (shift1 + shift2)) % 26 + ord('a'))
         elif char.isupper():
             if 'A' <= char <= 'M':
-                # Shift backward by shift1
                 new_char = chr((ord(char) - ord('A') - shift1) % 26 + ord('A'))
             else:  # N-Z
-                # Shift forward by shift2 squared
                 new_char = chr((ord(char) - ord('A') + shift2**2) % 26 + ord('A'))
         else:
-            # Leave spaces, numbers, special characters unchanged
             new_char = char
         encrypted += new_char
 
-    # Write encrypted content to file AFTER loop (merge-safe)
+    # Write encrypted content to file
     cwd = os.path.dirname(__file__)
     path = os.path.join(cwd, "encrypted_text.txt")
     with open(path, 'w') as f:
         f.write(encrypted)
 
     return encrypted
-
 
 #Encryption Part Ends
 
