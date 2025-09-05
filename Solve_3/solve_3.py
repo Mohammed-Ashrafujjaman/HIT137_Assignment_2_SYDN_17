@@ -10,7 +10,8 @@ Al-Amin Dhaly - 395230
 
 import turtle
 from termcolor import colored # this is for colored output in terminal
-
+from PIL import Image
+import os
 
 def input_validation(x, name):
     # Assigned to pujan
@@ -71,6 +72,7 @@ def draw_pattern(sides, length, depth):
 
     # starting turtle, A GUI library to draw something
     t = turtle.Turtle()
+    myWindow = turtle.Screen()
     # Determining the speed
     t.speed(0)
     # hiding turtle head increase the drawing speed. 
@@ -86,13 +88,26 @@ def draw_pattern(sides, length, depth):
     t.pendown()
 
     # start drawing according to side.
+    print(colored("After completion of drawing the Drawing board will close automatically in 3 seconds.","yellow"))
+    print(colored("An image of finished drawing will be saved in the file.","green"))
     for _ in range(sides):
         # calling the draw_edge with the parameter t=turtle, length = length of the side, depth = recursion depth
         draw_edge(t, length, depth)
         # turning the sides counter-clockwise for rotation 
         t.left(angle)  
 
-    turtle.done()
+    # this code below save image of the final drawing screen.
+    # this code below inspired by class lecture
+    path = os.path.join(os.path.dirname(__file__))
+    image_eps = path+'/turtle.eps'
+    canvas = myWindow.getcanvas()
+    canvas.postscript(file = image_eps)
+    img = Image.open(image_eps)
+    img.load(scale=3)
+    img.save(os.path.join(os.path.dirname(__file__), "turtle.png"))
+    
+    myWindow.ontimer(myWindow.bye(),3000)
+    # turtle.done()
 
 
 def main():

@@ -108,7 +108,6 @@ def seasonal_average():
 
 
 # Pujan --> temperature range findings
-
 def temperature_range():
     df = reading_dataset("preprocessed_temperatures.csv")
     df = df.dropna(subset=["Temperature"])
