@@ -99,8 +99,10 @@ def decryption(encrypted_data, shift1, shift2):
 
     return decrypted
 
+#Decryption Part Ends
+
 # Pujan → Verification
-# -------------------------------
+
 def verification(original_data, decrypted_data):
     if original_data == decrypted_data:
         print(colored("Verification: Decrypted text matches the original.\n","green"))
